@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Name of your Worker → https://legend-boy.<your-subdomain>.workers.dev
+  "name": "legend-boy",
+  "main": "src/worker.js",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // The phone web app (HTML/CSS/JS/images)
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Cloudflare Workers AI — chat, vision, voice, images, documents (no API key needed)
+  "ai": {
+    "binding": "AI"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  "vars": {
+    // Default voice for Legend Boy (Deepgram Aura-2). Users can change it in Settings.
+    "TTS_SPEAKER": "apollo"
+    // Optional overrides:
+    // "CHAT_MODEL": "@cf/meta/llama-4-scout-17b-16e-instruct"
+  }
+
+  // Optional secrets (set with `npx wrangler secret put NAME`):
+  //   ACCESS_CODE     → lock the app with a password so nobody else uses your AI credits
+  //   TAVILY_API_KEY  → better web research (https://tavily.com, free tier)
+  //   BRAVE_API_KEY   → alternative web search (https://brave.com/search/api)
+}

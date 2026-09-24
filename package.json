@@ -1,0 +1,17 @@
+{
+  "name": "legend-boy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Legend Boy — a mobile AI assistant (chat, voice, camera, files, research) running on Cloudflare Workers AI",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --ip 0.0.0.0",
+    "dev:demo": "wrangler dev -c wrangler.demo.jsonc --ip 0.0.0.0",
+    "deploy": "wrangler deploy",
+    "login": "wrangler login",
+    "check": "wrangler deploy --dry-run --outdir .wrangler/dry"
+  },
+  "devDependencies": {
+    "wrangler": "^4.139.0"
+  }
+}

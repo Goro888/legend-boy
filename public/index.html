@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#070b1f" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Legend Boy — your legendary AI assistant. Chat, talk, camera, files and research." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Legend Boy" />
+  <title>Legend Boy</title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <link rel="preload" as="image" href="/img/legend-boy.jpg" />
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <!-- ================= SPLASH (shows when you open the app) ================= -->
+  <section id="splash" class="splash" aria-label="Welcome">
+    <div class="splash-bg"></div>
+    <div class="splash-inner">
+      <div class="avatar-orb big" id="splashOrb">
+        <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+        <img class="avatar-img" src="/img/legend-boy.jpg" alt="Legend Boy" />
+      </div>
+      <h1 class="splash-title">Legend Boy</h1>
+      <p class="splash-greet" id="splashGreet">Your legendary AI assistant</p>
+      <button class="btn-primary splash-btn" id="splashStart">
+        <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+        Tap to talk to Legend Boy
+      </button>
+      <button class="btn-link" id="splashSkip">Continue in chat</button>
+    </div>
+  </section>
+
+  <!-- ================= APP ================= -->
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <button class="icon-btn" id="btnHistory" aria-label="Chats">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h12v2H3z"/></svg>
+      </button>
+      <div class="brand">
+        <img class="brand-avatar avatar-img" src="/img/legend-boy.jpg" alt="" />
+        <div class="brand-text">
+          <strong>Legend Boy</strong>
+          <span class="status" id="statusText"><i class="dot"></i>Online</span>
+        </div>
+      </div>
+      <button class="icon-btn" id="btnNewChat" aria-label="New chat">
+        <svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+      </button>
+      <button class="icon-btn" id="btnSettings" aria-label="Settings">
+        <svg viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3h-4l-.4 2.9a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1L11 21h4l.4-2.9a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5L19.4 13ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" transform="translate(-1 0)"/></svg>
+      </button>
+    </header>
+
+    <main class="views">
+      <!-- ---------- CHAT ---------- -->
+      <section class="view" id="view-chat" data-view="chat">
+        <div class="messages" id="messages" aria-live="polite"></div>
+
+        <div class="composer-wrap">
+          <div class="attach-row" id="attachRow" hidden></div>
+          <form class="composer" id="composer" autocomplete="off">
+            <button type="button" class="icon-btn round" id="btnAttach" aria-label="Add photo or file">
+              <svg viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+            </button>
+            <textarea id="input" rows="1" placeholder="Message Legend Boy…" enterkeyhint="send"></textarea>
+            <button type="button" class="icon-btn round" id="btnMic" aria-label="Voice message">
+              <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+            </button>
+            <button type="submit" class="icon-btn round send" id="btnSend" aria-label="Send">
+              <svg class="i-send" viewBox="0 0 24 24"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>
+              <svg class="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ---------- TALK ---------- -->
+      <section class="view" id="view-talk" data-view="talk" hidden>
+        <div class="talk">
+          <div class="talk-stage">
+            <div class="avatar-orb huge" id="talkOrb" data-state="idle">
+              <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+              <img class="avatar-img" src="/img/legend-boy.jpg" alt="Legend Boy" />
+            </div>
+            <div class="talk-state" id="talkState">Tap the mic and talk to me</div>
+          </div>
+          <div class="talk-captions">
+            <p class="cap-user" id="capUser"></p>
+            <p class="cap-bot" id="capBot"></p>
+          </div>
+          <div class="talk-controls">
+            <button class="icon-btn round lg ghost" id="talkMute" aria-label="Mute voice">
+              <svg class="i-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4ZM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6Z"/></svg>
+              <svg class="i-off" viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.2l2.4 2.4.1-.6ZM19 12c0 .9-.2 1.8-.5 2.6l1.5 1.5A8.9 8.9 0 0 0 21 12a9 9 0 0 0-7-8.8v2.1A7 7 0 0 1 19 12ZM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.2v2.1a9 9 0 0 0 3.7-1.8l2 2 1.3-1.3L4.3 3ZM12 4 9.9 6.1 12 8.2V4Z"/></svg>
+            </button>
+            <button class="talk-mic" id="talkMic" aria-label="Start talking">
+              <svg class="i-mic" viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+              <svg class="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            </button>
+            <button class="icon-btn round lg ghost" id="talkToChat" aria-label="Open chat">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4Zm3 4v2h10V8H7Zm0 3v2h7v-2H7Z"/></svg>
+            </button>
+          </div>
+          <label class="handsfree"><input type="checkbox" id="handsFree" checked /> Hands-free conversation</label>
+        </div>
+      </section>
+
+      <!-- ---------- CAMERA ---------- -->
+      <section class="view" id="view-camera" data-view="camera" hidden>
+        <div class="camera">
+          <video id="camVideo" playsinline muted autoplay></video>
+          <img id="camShot" alt="Captured photo" hidden />
+          <canvas id="camCanvas" hidden></canvas>
+          <div class="cam-msg" id="camMsg" hidden></div>
+
+          <div class="cam-top">
+            <button class="icon-btn round glass" id="camFlip" aria-label="Switch camera">
+              <svg viewBox="0 0 24 24"><path d="M20 5h-3.2L15 3H9L7.2 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm-8 13a5 5 0 0 1-4.9-4H5l2.5-3 2.5 3H8.2A3.9 3.9 0 0 0 12 16.9c.8 0 1.6-.3 2.2-.7l.8.8A5 5 0 0 1 12 18Zm4.5-4L14 11h1.8A3.9 3.9 0 0 0 12 8.1c-.8 0-1.6.3-2.2.7L9 8a5 5 0 0 1 7.9 3H19l-2.5 3Z"/></svg>
+            </button>
+          </div>
+
+          <div class="cam-bottom">
+            <div class="chips" id="camModes">
+              <button class="chip active" data-prompt="What is this? Describe what you see in detail.">👀 Describe</button>
+              <button class="chip" data-prompt="Read and transcribe all the text in this image exactly.">📄 Read text</button>
+              <button class="chip" data-prompt="Solve this step by step and explain the answer.">🧮 Solve</button>
+              <button class="chip" data-prompt="Translate all text in this image to English and explain it.">🌍 Translate</button>
+              <button class="chip" data-prompt="Identify this (object, plant, animal, product or place) and tell me useful facts about it.">🔎 Identify</button>
+              <button class="chip" data-prompt="Give me honest style or improvement tips based on this photo.">✨ Tips</button>
+            </div>
+            <div class="cam-ask" id="camAsk" hidden>
+              <input id="camPrompt" type="text" placeholder="Ask about this photo…" enterkeyhint="send" />
+            </div>
+            <div class="cam-actions">
+              <button class="icon-btn round lg glass" id="camGallery" aria-label="Choose from gallery">
+                <svg viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2ZM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5Z"/></svg>
+              </button>
+              <button class="shutter" id="camShutter" aria-label="Take photo"><span></span></button>
+              <button class="icon-btn round lg glass" id="camRetake" aria-label="Retake" hidden>
+                <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8Z"/></svg>
+              </button>
+              <button class="icon-btn round lg glass" id="camSpacer" aria-hidden="true" style="visibility:hidden"></button>
+            </div>
+            <button class="btn-primary wide" id="camSend" hidden>Ask Legend Boy</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- FILES & PHOTOS ---------- -->
+      <section class="view scroll" id="view-files" data-view="files" hidden>
+        <div class="page">
+          <h2 class="page-title">Files &amp; Photos</h2>
+          <p class="page-sub">Add photos or documents and Legend Boy will read, explain, summarise or answer questions about them.</p>
+
+          <div class="tiles">
+            <button class="tile" id="pickPhotos">
+              <span class="tile-ic">🖼️</span><strong>Photos</strong><small>From your gallery</small>
+            </button>
+            <button class="tile" id="pickFiles">
+              <span class="tile-ic">📁</span><strong>Files</strong><small>PDF, Word, Excel, text, code</small>
+            </button>
+            <button class="tile" id="pickCameraFile">
+              <span class="tile-ic">📷</span><strong>Snap</strong><small>Take a quick photo</small>
+            </button>
+            <button class="tile" id="pickImagine">
+              <span class="tile-ic">🎨</span><strong>Create</strong><small>Generate an image</small>
+            </button>
+          </div>
+
+          <div class="lib-head">
+            <h3>Your library</h3>
+            <button class="btn-link" id="libClear" hidden>Clear</button>
+          </div>
+          <div class="library" id="library">
+            <div class="empty" id="libEmpty">No files yet. Add a photo or document above.</div>
+          </div>
+
+          <div class="lib-ask" id="libAsk" hidden>
+            <textarea id="libPrompt" rows="2" placeholder="Ask about the selected items… (e.g. Summarise this)"></textarea>
+            <div class="lib-quick">
+              <button class="chip" data-q="Summarise this in simple words with the key points.">Summarise</button>
+              <button class="chip" data-q="Explain this to me like I'm a beginner.">Explain</button>
+              <button class="chip" data-q="Extract all important facts, numbers and dates as a list.">Key facts</button>
+              <button class="chip" data-q="Create 5 quiz questions with answers from this.">Quiz me</button>
+            </div>
+            <button class="btn-primary wide" id="libSend">Ask Legend Boy</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RESEARCH ---------- -->
+      <section class="view scroll" id="view-research" data-view="research" hidden>
+        <div class="page">
+          <h2 class="page-title">Research</h2>
+          <p class="page-sub">Legend Boy searches the web, reads the sources and writes you a report with citations.</p>
+
+          <form class="research-form" id="researchForm">
+            <textarea id="researchInput" rows="3" placeholder="What should I research? e.g. Best budget phones this year" required></textarea>
+            <div class="research-opts">
+              <div class="seg" role="radiogroup" aria-label="Depth">
+                <button type="button" class="seg-btn active" data-depth="quick">⚡ Quick</button>
+                <button type="button" class="seg-btn" data-depth="deep">🧠 Deep</button>
+              </div>
+              <button class="btn-primary" id="researchGo" type="submit">Research</button>
+            </div>
+          </form>
+
+          <div class="research-out" id="researchOut" hidden>
+            <ol class="steps" id="researchSteps"></ol>
+            <div class="sources" id="researchSources"></div>
+            <article class="report md" id="researchReport"></article>
+            <div class="report-actions" id="researchActions" hidden>
+              <button class="chip" id="rCopy">📋 Copy</button>
+              <button class="chip" id="rListen">🔊 Listen</button>
+              <button class="chip" id="rChat">💬 Discuss in chat</button>
+            </div>
+          </div>
+
+          <div class="research-ideas" id="researchIdeas">
+            <h3>Try</h3>
+            <button class="idea">Latest news in AI this week</button>
+            <button class="idea">Compare iPhone vs Samsung flagship</button>
+            <button class="idea">How to start a small online business</button>
+            <button class="idea">Healthy meal plan for building muscle</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" id="tabbar">
+      <button class="tab active" data-go="chat"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3V4Z"/></svg><span>Chat</span></button>
+      <button class="tab" data-go="talk"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg><span>Talk</span></button>
+      <button class="tab" data-go="camera"><svg viewBox="0 0 24 24"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9Zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg><span>Camera</span></button>
+      <button class="tab" data-go="files"><svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm7 1.5V9h5.5L13 3.5Z"/></svg><span>Files</span></button>
+      <button class="tab" data-go="research"><svg viewBox="0 0 24 24"><path d="M10 2a8 8 0 0 1 6.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1 1 10 2Zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/></svg><span>Research</span></button>
+    </nav>
+  </div>
+
+  <!-- ================= SHEETS / OVERLAYS ================= -->
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- Attach sheet -->
+  <div class="sheet" id="attachSheet" hidden>
+    <div class="sheet-handle"></div>
+    <div class="sheet-grid">
+      <button data-act="camera"><span>📷</span>Camera</button>
+      <button data-act="photos"><span>🖼️</span>Photos</button>
+      <button data-act="files"><span>📁</span>Files</button>
+      <button data-act="imagine"><span>🎨</span>Create image</button>
+      <button data-act="research"><span>🔎</span>Research</button>
+      <button data-act="talk"><span>🎙️</span>Talk</button>
+    </div>
+  </div>
+
+  <!-- Imagine sheet -->
+  <div class="sheet" id="imagineSheet" hidden>
+    <div class="sheet-handle"></div>
+    <h3 class="sheet-title">🎨 Create an image</h3>
+    <textarea id="imaginePrompt" rows="3" placeholder="A futuristic city at sunset, neon lights, cinematic…"></textarea>
+    <button class="btn-primary wide" id="imagineGo">Create</button>
+  </div>
+
+  <!-- History drawer -->
+  <aside class="drawer" id="drawer" hidden>
+    <div class="drawer-head">
+      <img class="avatar-img" src="/img/legend-boy.jpg" alt="" />
+      <div><strong>Legend Boy</strong><small>Your chats</small></div>
+    </div>
+    <button class="btn-primary wide" id="drawerNew">＋ New chat</button>
+    <div class="chat-list" id="chatList"></div>
+  </aside>
+
+  <!-- Settings -->
+  <div class="sheet tall" id="settingsSheet" hidden>
+    <div class="sheet-handle"></div>
+    <h3 class="sheet-title">Settings</h3>
+    <div class="settings">
+      <div class="set-avatar">
+        <img class="avatar-img" id="setAvatarImg" src="/img/legend-boy.jpg" alt="Avatar" />
+        <div>
+          <strong>Legend Boy's photo</strong>
+          <div class="row">
+            <button class="chip" id="setAvatarChange">Change photo</button>
+            <button class="chip" id="setAvatarReset">Reset</button>
+          </div>
+        </div>
+      </div>
+      <label class="field">Your name
+        <input id="setName" type="text" placeholder="What should Legend Boy call you?" maxlength="40" />
+      </label>
+      <label class="field">Voice engine
+        <select id="setEngine">
+          <option value="cloud">Legend HD voice (Cloudflare AI)</option>
+          <option value="device">Phone's built-in voice</option>
+        </select>
+      </label>
+      <label class="field" id="setSpeakerWrap">Voice
+        <select id="setSpeaker"></select>
+      </label>
+      <button class="chip" id="setTestVoice">🔊 Test voice</button>
+      <label class="field">Speech language
+        <select id="setLang">
+          <option value="auto">Auto-detect</option>
+          <option value="en">English</option>
+          <option value="ar">Arabic</option>
+          <option value="hi">Hindi</option>
+          <option value="ur">Urdu</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="pt">Portuguese</option>
+          <option value="tr">Turkish</option>
+          <option value="ru">Russian</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="id">Indonesian</option>
+          <option value="bn">Bengali</option>
+        </select>
+      </label>
+      <label class="toggle"><input type="checkbox" id="setAutoSpeak" /> <span>Read chat replies out loud</span></label>
+      <label class="toggle"><input type="checkbox" id="setGreet" /> <span>Greet me with voice when I open the app</span></label>
+      <label class="field" id="setCodeWrap">Access code
+        <input id="setCode" type="password" placeholder="Only if you set ACCESS_CODE" autocomplete="off" />
+      </label>
+      <button class="btn-danger wide" id="setClear">Delete all chats</button>
+      <p class="fine" id="setInfo"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Hidden pickers -->
+  <input type="file" id="inPhotos" accept="image/*" multiple hidden />
+  <input type="file" id="inCamera" accept="image/*" capture="environment" hidden />
+  <input type="file" id="inFiles" multiple hidden
+    accept=".pdf,.doc,.docx,.xls,.xlsx,.ods,.odt,.csv,.txt,.md,.json,.html,.htm,.xml,.js,.ts,.py,.java,.c,.cpp,.cs,.go,.rs,.php,.rb,.swift,.kt,.sql,.yaml,.yml,.log,.numbers,image/*" />
+  <input type="file" id="inAvatar" accept="image/*" hidden />
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
